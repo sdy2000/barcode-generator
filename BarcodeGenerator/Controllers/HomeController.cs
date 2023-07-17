@@ -27,18 +27,22 @@ namespace BarcodeGenerator.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult GenerateBarcode(            string name = "noName"            )
+        public IActionResult GenerateBarcode(string name = "noName")
         {
             Barcode barcode = new Barcode();
             barcode.IncludeLabel = true;
-            barcode.Encode(TYPE.CODE39Extended, name , Color.Black, Color.White, 400, 100);
+            barcode.Encode(TYPE.CODE39Extended, name, Color.Black, Color.White, 400, 100);
             Image img = barcode.EncodedImage;
             byte[] data = ConvertImageToByte(img);
 
             string imageName = $"{Guid.NewGuid().ToString()}.png";
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", imageName);
 
-            System.IO.File.WriteAllBytes(imagePath, data);
+            if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+                System.IO.File.WriteAllBytes(imagePath, data);
+            }
 
             ViewBag.ImagePath = $"/Images/{imageName}";
 
@@ -60,7 +64,7 @@ namespace BarcodeGenerator.Controllers
         {
             QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
             QRCodeData qRCodeData = qRCodeGenerator
-                .CreateQrCode( name + "--" + email + "--" + phone, QRCodeGenerator.ECCLevel.Q);
+                .CreateQrCode(name + "--" + email + "--" + phone, QRCodeGenerator.ECCLevel.Q);
             QRCode qRCode = new QRCode(qRCodeData);
             Bitmap bitmap = qRCode.GetGraphic(10);
             var bitmapBytes = ConvertBitmapToBytes(bitmap);
@@ -68,7 +72,11 @@ namespace BarcodeGenerator.Controllers
             string imageName = $"{Guid.NewGuid().ToString()}.png";
             string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", imageName);
 
-            System.IO.File.WriteAllBytes(imagePath, bitmapBytes);
+            if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+                System.IO.File.WriteAllBytes(imagePath, bitmapBytes);
+            }
 
             ViewBag.ImagePath = $"/Images/{imageName}";
 
