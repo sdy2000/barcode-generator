@@ -41,8 +41,8 @@ namespace BarcodeGenerator.Controllers
             if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
-                System.IO.File.WriteAllBytes(imagePath, data);
             }
+                System.IO.File.WriteAllBytes(imagePath, data);
 
             ViewBag.ImagePath = $"/Images/{imageName}";
 
@@ -75,8 +75,8 @@ namespace BarcodeGenerator.Controllers
             if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
-                System.IO.File.WriteAllBytes(imagePath, bitmapBytes);
             }
+                System.IO.File.WriteAllBytes(imagePath, bitmapBytes);
 
             ViewBag.ImagePath = $"/Images/{imageName}";
 
